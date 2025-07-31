@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userRegistration = new Schema({
-    firstname : {
+    firstName : {
         type : String,
         required : true
     },
-    lastname : {
+    lastName : {
         type : String,
         required : true
     },
@@ -18,15 +18,19 @@ const userRegistration = new Schema({
         trim: true,
         match: [/\S+@\S+\.\S+/, "Please use a valid email address"]
     },
+    phone : {
+        type : Number,
+        required : true
+    },
     age : {
         type : Number,
-        type : required
+        required : true
     },
     college : {
         type : String,
         required : true
     },
-    linkdin : {
+    linkedin : {
         type : String,
         required : true
     },
