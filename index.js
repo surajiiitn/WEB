@@ -72,10 +72,8 @@ app.post("/listings",async (req,res)=>{const data = req.body;
       }
     });
 
-    console.log("✅ Data saved to MongoDB and Google Sheet");
     res.render("success.ejs",{name : data.first});
   } catch (err) {
-    console.error("❌ Error:", err.message);
     res.status(500).send("Something went wrong");
   }
 
