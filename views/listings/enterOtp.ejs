@@ -1,0 +1,26 @@
+<% layout("/layouts/boilerplate") %>
+
+<section class="min-h-screen flex flex-col justify-center items-center px-4">
+  <h1 class="text-2xl font-bold mb-4">Enter OTP</h1>
+  <form method="POST" action="/listings/submit-otp" class="w-full max-w-sm space-y-4">
+    <!-- Show email (read-only) -->
+    <input
+      type="text"
+      name="email"
+      value="<%= email %>"
+      readonly
+      class="border p-2 rounded w-full bg-gray-100"
+    />
+
+    <!-- OTP input -->
+    <input
+      type="text"
+      name="otp"
+      placeholder="Enter your OTP"
+      required
+      class="border p-2 rounded w-full"
+    />
+
+    <button type="submit" class="bg-blue-600 text-white p-2 rounded w-full">Verify OTP</button>
+  </form>
+</section>

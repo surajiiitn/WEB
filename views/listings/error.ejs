@@ -1,0 +1,10 @@
+<% layout('layouts/boilerplate') %>
+
+<main class="min-h-screen bg-dark-bg flex flex-col items-center justify-center text-white px-4">
+  <div class="text-center">
+    <h1 class="text-6xl font-bold text-primary-red mb-4"><%= err.statusCode || 500 %></h1>
+    <h2 class="text-3xl font-semibold mb-2">Oops! Something went wrong.</h2>
+    <p class="text-lg text-gray-300 mb-6"><%= err.message || "An unexpected error occurred." %></p>
+    <a href="/" class="inline-block bg-primary-red hover:bg-red-600 transition px-6 py-2 rounded-full text-white font-medium">Back to Home</a>
+  </div>
+</main>

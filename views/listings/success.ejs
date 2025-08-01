@@ -1,5 +1,13 @@
-<% layout("/layouts/boilerplate.ejs") %>
-<body>
-    <h1>Thank you For Registration</h1>
-    <p>Name : <%= name %></p>
-</body>
+<% layout("/layouts/boilerplate") %>
+
+<main class="min-h-screen bg-dark-bg flex flex-col items-center justify-center text-white px-4">
+  <div class="text-center">
+    <h1 class="text-6xl font-bold text-green-400 mb-4">✅</h1>
+    <h2 class="text-3xl font-semibold mb-2">Registration Successful!</h2>
+    <p class="text-lg text-gray-300 mb-6">
+      Welcome, <span class="text-white font-bold"><%= name %></span> 🎉<br>
+      We've received your details.
+    </p>
+    <a href="/" class="inline-block bg-primary-red hover:bg-red-600 transition px-6 py-2 rounded-full text-white font-medium">Back to Home</a>
+  </div>
+</main>
