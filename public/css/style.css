@@ -18,8 +18,8 @@
   --color-teal-600: rgba(29, 116, 128, 1);
   --color-teal-700: rgba(26, 104, 115, 1);
   --color-teal-800: rgba(41, 150, 161, 1);
-  --color-red-400: rgba(255, 84, 89, 1);
-  --color-red-500: rgba(192, 21, 47, 1);
+  --color-red-400: rgba(168, 85, 247, 1);
+  --color-red-500: rgba(126, 34, 206, 1);
   --color-orange-400: rgba(230, 129, 97, 1);
   --color-orange-500: rgba(168, 75, 47, 1);
 
@@ -28,8 +28,8 @@
   --color-teal-500-rgb: 33, 128, 141;
   --color-slate-900-rgb: 19, 52, 59;
   --color-slate-500-rgb: 98, 108, 113;
-  --color-red-500-rgb: 192, 21, 47;
-  --color-red-400-rgb: 255, 84, 89;
+  --color-red-500-rgb: 126, 34, 206;
+  --color-red-400-rgb: 168, 85, 247;
   --color-orange-500-rgb: 168, 75, 47;
   --color-orange-400-rgb: 230, 129, 97;
 
@@ -75,7 +75,7 @@
 
   /* RGB versions for opacity control */
   --color-success-rgb: 33, 128, 141;
-  --color-error-rgb: 192, 21, 47;
+  --color-error-rgb: 126, 34, 206;
   --color-warning-rgb: 168, 75, 47;
   --color-info-rgb: 98, 108, 113;
 
@@ -579,12 +579,12 @@ select.form-control {
 
 .status--error {
   background-color: rgba(
-    var(--color-error-rgb, 192, 21, 47),
+    var(--color-error-rgb, 126, 34, 206),
     var(--status-bg-opacity)
   );
   color: var(--color-error);
   border: 1px solid
-    rgba(var(--color-error-rgb, 192, 21, 47), var(--status-border-opacity));
+    rgba(var(--color-error-rgb, 126, 34, 206), var(--status-border-opacity));
 }
 
 .status--warning {
@@ -742,8 +742,8 @@ select.form-control {
 
 /* Glow effects */
 .glow-red {
-    text-shadow: 0 0 20px #FF4F5A, 0 0 40px #FF4F5A, 0 0 60px #FF4F5A;
-    animation: pulse-red 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 20px #7e22ce, 0 0 40px #7e22ce, 0 0 60px #7e22ce;
+    animation: pulse-purple 2s ease-in-out infinite alternate;
 }
 
 .glow-purple {
@@ -751,19 +751,19 @@ select.form-control {
 }
 
 .glow-red-button {
-    box-shadow: 0 0 20px rgba(255, 79, 90, 0.4);
+    box-shadow: 0 0 20px rgba(126, 34, 206, 0.4);
 }
 
 .glow-red-button:hover {
-    box-shadow: 0 0 30px rgba(255, 79, 90, 0.6);
+    box-shadow: 0 0 30px rgba(126, 34, 206, 0.6);
 }
 
-@keyframes pulse-red {
+@keyframes pulse-purple {
     0% {
-        text-shadow: 0 0 20px #FF4F5A, 0 0 40px #FF4F5A, 0 0 60px #FF4F5A;
+        text-shadow: 0 0 20px #7e22ce, 0 0 40px #7e22ce, 0 0 60px #7e22ce;
     }
     100% {
-        text-shadow: 0 0 30px #FF4F5A, 0 0 60px #FF4F5A, 0 0 90px #FF4F5A;
+        text-shadow: 0 0 30px #7e22ce, 0 0 60px #7e22ce, 0 0 90px #7e22ce;
     }
 }
 
@@ -781,8 +781,8 @@ select.form-control {
 
 .form-input:focus {
     outline: none;
-    border-color: #FF4F5A;
-    box-shadow: 0 0 0 3px rgba(255, 79, 90, 0.2);
+    border-color: #7e22ce;
+    box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.2);
 }
 
 .form-input::placeholder {
@@ -790,7 +790,7 @@ select.form-control {
 }
 
 .form-input:invalid:not(:placeholder-shown) {
-    border-color: #ef4444;
+    border-color: #8b5cf6;
 }
 
 .form-input:valid:not(:placeholder-shown) {
@@ -988,12 +988,12 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #FF4F5A;
+    background: #7e22ce;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #ff3d4a;
+    background: #9333ea;
 }
 
 /* Loading animation for form submission */
@@ -1026,7 +1026,7 @@ html {
 .nav-icon:focus,
 button:focus,
 .form-input:focus {
-    outline: 2px solid #FF4F5A;
+    outline: 2px solid #7e22ce;
     outline-offset: 2px;
 }
 
@@ -1047,7 +1047,7 @@ button:focus,
     
     .glow-red {
         text-shadow: none;
-        color: #FF4F5A;
+        color: #7e22ce;
     }
     
     .glow-purple {
@@ -1085,12 +1085,12 @@ button:focus,
 
 /* Selection styling */
 ::selection {
-    background-color: rgba(255, 79, 90, 0.3);
+    background-color: rgba(126, 34, 206, 0.3);
     color: white;
 }
 
 ::-moz-selection {
-    background-color: rgba(255, 79, 90, 0.3);
+    background-color: rgba(126, 34, 206, 0.3);
     color: white;
 }
 
@@ -1105,7 +1105,7 @@ button:focus,
 
 .border-gradient {
     border: 1px solid;
-    border-image: linear-gradient(45deg, #FF4F5A, #6A00FF) 1;
+    border-image: linear-gradient(45deg, #7e22ce, #6A00FF) 1;
 }
 
 /* Intersection observer fade-in classes */
@@ -1191,7 +1191,7 @@ button:focus,
 }
 
 .stats-section {
-    background: linear-gradient(135deg, #FF2E4C 0%, #ff1744 100%);
+    background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%);
     position: relative;
     overflow: hidden;
 }
@@ -1225,7 +1225,7 @@ button:focus,
     position: absolute;
     bottom: -20px;
     left: 0;
-    color: #ef4444;
+    color: #8b5cf6;
     font-size: 12px;
     opacity: 0;
     transition: opacity 0.3s ease;
@@ -1236,7 +1236,7 @@ button:focus,
 }
 
 .form-group.error .form-input {
-    border-color: #ef4444;
+    border-color: #8b5cf6;
     box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
 }
 
@@ -1292,7 +1292,7 @@ button:focus,
     position: absolute;
     top: -40px;
     left: 6px;
-    background: #FF4F5A;
+    background: #7e22ce;
     color: white;
     padding: 8px;
     text-decoration: none;
