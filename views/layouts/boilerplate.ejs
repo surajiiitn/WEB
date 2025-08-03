@@ -74,5 +74,44 @@
   <%- include("../includes/footer.ejs", { hideNavbar: footerHidden }) %>
 
   <script src="/js/script.js"></script>
+      <script src="app.js"></script>
+<!-- Lightbox Modal -->
+<div id="lightbox" class="fixed inset-0 bg-black bg-opacity-90 hidden items-center justify-center z-50">
+  <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+  <img id="lightboxImage" src="" alt="Preview" class="max-w-full max-h-[80vh] rounded shadow-lg">
+  <!-- Arrows -->
+  <button onclick="prevImage()" class="absolute left-4 text-white text-4xl">&#8592;</button>
+  <button onclick="nextImage()" class="absolute right-4 text-white text-4xl">&#8594;</button>
+</div>
+
+<script>
+  const images = [
+    "images/genp1.jpg",
+    "images/genp2.jpg",
+    "images/genp3.jpg"
+  ];
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    document.getElementById('lightboxImage').src = images[index];
+    document.getElementById('lightbox').classList.remove('hidden');
+    document.getElementById('lightbox').classList.add('flex');
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.add('hidden');
+  }
+
+  function nextImage() {
+    currentIndex = (currentIndex + 1) % images.length;
+    document.getElementById('lightboxImage').src = images[currentIndex];
+  }
+
+  function prevImage() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    document.getElementById('lightboxImage').src = images[currentIndex];
+  }
+</script>
 </body>
 </html>
