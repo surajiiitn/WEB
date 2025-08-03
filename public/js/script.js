@@ -4,7 +4,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize all components
     initBinaryBackground();
-    // initSmoothScroll();
+    // initSmoothScroll();s
     initGSAPAnimations();
     // initFormValidation();
     initMobileMenu();

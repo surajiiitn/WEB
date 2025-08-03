@@ -68,7 +68,7 @@ app.post(
     const email = data.email;
 
     const otp = Math.floor(100000 + Math.random() * 900000);
-    const expiresAt = Date.now() + 5 * 60 * 1000;
+    const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
 
     otpStore.set(email, { otp, data, expiresAt });
 
@@ -83,7 +83,7 @@ app.post(
   })
 );
 
-// Verify OTP -> Save to DB + Sheet
+// Verify OTP -> Save to DB + Sheet + Send Confirmation Email
 app.post(
   "/listings/submit-otp",
   wrapAsync(async (req, res, next) => {
@@ -111,7 +111,7 @@ app.post(
       throw err;
     }
 
-    // Save to Google Sheets — handle network error here
+    // Save to Google Sheets
     try {
       const client = await auth.getClient();
       await sheets.spreadsheets.values.append({
@@ -149,10 +149,34 @@ app.post(
       throw err;
     }
 
+    // Send success confirmation email with WhatsApp group link
+    await transporter.sendMail({
+      from: "elevatexyz92@gmail.com",
+      to: data.email,
+      subject: "Registration Successful - Genathon 3.0",
+      text: `Hello ${data.firstName},
+
+Thank you for registering for Genathon 3.0! Your registration is successful.
+
+Join our WhatsApp group here: https://chat.whatsapp.com/YourGroupInviteLink
+
+We look forward to seeing you at the event.
+
+Best regards,
+Team Elevate`,
+      html: `
+        <p>Hello ${data.firstName},</p>
+        <p>Thank you for registering for Genathon 3.0! Your registration is successful.</p>
+        <p>Join our WhatsApp group here: <a href="https://chat.whatsapp.com/GnBtWJ7BQJg0TS2daI9rPO?mode=ac_t" target="_blank" rel="noopener noreferrer">WhatsApp Group</a></p>
+        <p>We look forward to seeing you at the event.</p>
+        <p>Best regards,<br>Team Elevate</p>
+      `,
+    });
+
     otpStore.delete(email);
     res.render("listings/success", { name: data.firstName, hideNavbar: true });
   })
-);
+);``
 
 // -------------------- Error Handling --------------------
 app.all("*", (req, res, next) => {
@@ -167,7 +191,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// -------------------- Start Server --------------------
+// -------------------- Start Server ---------------------
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

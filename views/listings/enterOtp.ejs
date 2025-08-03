@@ -1,7 +1,8 @@
 <% layout("/layouts/boilerplate") %>
 
 <section class="min-h-screen flex flex-col justify-center items-center px-4">
-  <h1 class="text-2xl font-bold mb-4">Enter OTP</h1>
+  <h1 class="text-2xl font-bold mb-6 text-center">Enter OTP</h1>
+
   <form method="POST" action="/listings/submit-otp" class="w-full max-w-sm space-y-4">
     <!-- Show email (read-only) -->
     <input
@@ -9,7 +10,7 @@
       name="email"
       value="<%= email %>"
       readonly
-      class="border p-2 rounded w-full bg-gray-100"
+      class="form-input bg-gray-100 cursor-not-allowed"
     />
 
     <!-- OTP input -->
@@ -18,9 +19,15 @@
       name="otp"
       placeholder="Enter your OTP"
       required
-      class="border p-2 rounded w-full"
+      class="form-input"
     />
 
-    <button type="submit" class="bg-blue-600 text-white p-2 rounded w-full">Verify OTP</button>
+    <button
+      type="submit"
+      class="w-full bg-primary-red hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 glow-red-button"
+    >
+      Verify OTP
+    </button>
   </form>
 </section>
+
