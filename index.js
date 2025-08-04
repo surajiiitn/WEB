@@ -5,6 +5,7 @@ const ejsMate = require("ejs-mate");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
+const { otpEmailHtml, successEmailHtml } = require("./emailTemplates");
 
 const User = require("./models/userRegisteration");
 const Team = require("./models/teamMember");
@@ -87,7 +88,7 @@ app.post(
       from: "elevatexyz92@gmail.com",
       to: email,
       subject: "Your OTP for Genathon Registration",
-      text: `Your OTP is: ${otp}. It is valid for 5 minutes.`,
+      html: otpEmailHtml(otp),
     });
 
     res.render("listings/enterOtp", { email, hideNavbar: true });
@@ -136,7 +137,7 @@ app.post(
       from: "elevatexyz@gmail.com",
       to: data.email,
       subject: "Registration Successful - Genathon 3.0",
-      html: `<p>Hello ${data.firstName},</p><p>Thank you for registering for Genathon 3.0!</p><p><a href="https://chat.whatsapp.com/GnBtWJ7BQJg0TS2daI9rPO?mode=ac_t">Join WhatsApp Group</a></p><p>Best regards,<br>Team Elevate</p>`,
+      html: successEmailHtml(data.firstName),
     });
 
     otpStore.delete(email);
