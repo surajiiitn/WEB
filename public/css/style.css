@@ -1321,3 +1321,9 @@ button:focus,
         animation: none;
     }
 }
+
+.nav-icon:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(128, 90, 210, 0.7); /* purple glow */
+  border-radius: 9999px;
+}

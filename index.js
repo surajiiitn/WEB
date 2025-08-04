@@ -14,7 +14,7 @@ const { userRegistrationSchema, teamRegistrationSchema } = require("./schema");
 
 const app = express();
 
-// -------------------- Database Connection --------------------
+// -------------------- Database Connection --------------------`
 mongoose
   .connect("mongodb://127.0.0.1:27017/elevate")
   .then(() => console.log("✅ Connected to database"))
@@ -47,15 +47,15 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "elevatexyz92@gmail.com",
-    pass: "kzta iinh btwa qirh", // use environment variables for production
+    pass: "kzta iinh btwa qirh", // Use env vars in production
   },
 });
 
 // -------------------- Routes --------------------
 
-// Home Page
+// Home Page - show navbar only here
 app.get("/", (req, res) => {
-  res.render("listings/home");
+  res.render("listings/home", { hideNavbar: false });
 });
 
 // User Registration: Submit form -> Send OTP
@@ -75,6 +75,7 @@ app.post(
         name: existingUser.firstName,
         email: existingUser.email,
         alreadyRegistered: true,
+        hideNavbar: true,
       });
     }
 
@@ -89,7 +90,7 @@ app.post(
       text: `Your OTP is: ${otp}. It is valid for 5 minutes.`,
     });
 
-    res.render("listings/enterOtp", { email });
+    res.render("listings/enterOtp", { email, hideNavbar: true });
   })
 );
 
@@ -132,20 +133,20 @@ app.post(
     });
 
     await transporter.sendMail({
-      from: "elevatexyz92@gmail.com",
+      from: "elevatexyz@gmail.com",
       to: data.email,
       subject: "Registration Successful - Genathon 3.0",
       html: `<p>Hello ${data.firstName},</p><p>Thank you for registering for Genathon 3.0!</p><p><a href="https://chat.whatsapp.com/GnBtWJ7BQJg0TS2daI9rPO?mode=ac_t">Join WhatsApp Group</a></p><p>Best regards,<br>Team Elevate</p>`,
     });
 
     otpStore.delete(email);
-    res.render("listings/success", { name: data.firstName, email: data.email });
+    res.render("listings/success", { name: data.firstName, email: data.email, hideNavbar: true });
   })
 );
 
-// Render Team Registration Page
+// Render Team Registration Page (hide navbar)
 app.get("/team/register", (req, res) => {
-  res.render("listings/reg");
+  res.render("listings/reg", { errorMessage: null, formData: {}, hideNavbar: true });
 });
 
 // Handle team registration form submission
@@ -153,35 +154,49 @@ app.post(
   "/register/team",
   wrapAsync(async (req, res, next) => {
     delete req.body.additionalCount;
-    let members = req.body.members || [];
 
-    // ✅ Filter members BEFORE validation
-    members = members.filter(member => {
-      return (
-        member.firstName?.trim() ||
-        member.lastName?.trim() ||
-        member.email?.trim() ||
-        member.phone?.trim() ||
-        member.linkedin?.trim()
-      );
-    });
+    let members = req.body.members || [];
+    if (!Array.isArray(members)) {
+      // If only one member is added, members may be object not array
+      members = [members];
+    }
+
+    // Filter members BEFORE validation to remove empty member forms
+    members = members.filter(
+      (member) =>
+        member.firstName?.trim() || member.lastName?.trim() || member.email?.trim()
+    );
 
     req.body.members = members;
 
     const { error } = teamRegistrationSchema.validate(req.body);
-    if (error)
-      throw new ExpressError(400, error.details.map((el) => el.message).join(", "));
+    if (error) {
+      return res.status(400).render("listings/reg", {
+        errorMessage: error.details.map((el) => el.message).join(", "),
+        formData: req.body,
+        hideNavbar: true,
+      });
+    }
 
     const { creatorEmail, teamName } = req.body;
 
     const existingCreator = await User.findOne({ email: creatorEmail });
-    if (!existingCreator)
-      throw new ExpressError(400, "Creator email is not registered.");
+    if (!existingCreator) {
+      return res.status(400).render("listings/reg", {
+        errorMessage: "Creator email is not registered.",
+        formData: req.body,
+        hideNavbar: true,
+      });
+    }
 
     const memberEmails = members.map((m) => m.email);
     const existingMembers = await User.find({ email: { $in: memberEmails } });
     if (existingMembers.length !== memberEmails.length) {
-      throw new ExpressError(400, "Some team members are not registered individually.");
+      return res.status(400).render("listings/reg", {
+        errorMessage: "Some team members are not registered individually.",
+        formData: req.body,
+        hideNavbar: true,
+      });
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -189,26 +204,27 @@ app.post(
     otpStore.set(teamName, { otp, data: { creatorEmail, teamName, members }, expiresAt });
 
     for (const member of members) {
-      await transporter.sendMail({
-        from: "elevatexyz92@gmail.com",
-        to: member.email,
-        subject: "Team Registration OTP - Genathon 3.0",
-        text: `Your team registration OTP is: ${otp}. It is valid for 5 minutes.`,
-      });
+      if (member.email) {
+        await transporter.sendMail({
+          from: "elevatexyz92@gmail.com",
+          to: member.email,
+          subject: "Team Registration OTP - Genathon 3.0",
+          text: `Your team registration OTP is: ${otp}. It is valid for 5 minutes.`,
+        });
+      }
     }
 
-    res.render("listings/enterTeamOtp", { teamName });
+    res.render("listings/enterTeamOtp", { teamName, hideNavbar: true });
   })
 );
 
-// Verify Team OTP
+// Verify Team OTP (hide navbar)
 app.post(
   "/team/verify-otp",
   wrapAsync(async (req, res, next) => {
     const { teamName, otp } = req.body;
     const record = otpStore.get(teamName);
 
-    // 1. Validate OTP
     if (!record || Date.now() > record.expiresAt)
       throw new ExpressError(400, "OTP expired or invalid.");
     if (record.otp.toString() !== otp.trim())
@@ -216,19 +232,27 @@ app.post(
 
     const { creatorEmail, teamName: savedTeamName, members } = record.data;
 
-    // 2. Check if team name already exists
+    // Check if team name already exists (unique)
     const existing = await Team.findOne({ teamName: savedTeamName });
     if (existing) {
-      otpStore.delete(teamName); // clear OTP to avoid reuse
+      otpStore.delete(teamName);
       return res.render("listings/teamSuccess", {
         teamName: savedTeamName,
         alreadyRegistered: true,
+        hideNavbar: true,
       });
     }
 
-    // 3. Save team data to MongoDB
+    // Get creator phone number from User collection
+    const creator = await User.findOne({ email: creatorEmail });
+    if (!creator) {
+      otpStore.delete(teamName);
+      throw new ExpressError(400, "Creator email not found in users.");
+    }
+
     const newTeam = new Team({
       creatorEmail,
+      creatorPhone: creator.phone,
       teamName: savedTeamName,
       members,
     });
@@ -237,26 +261,31 @@ app.post(
       await newTeam.save();
       console.log("✅ Team saved in MongoDB:", newTeam);
     } catch (err) {
+      otpStore.delete(teamName);
+      if (err.code === 11000 && err.keyPattern && err.keyPattern.teamName) {
+        // Duplicate team name error
+        return res.status(400).render("listings/reg", {
+          errorMessage: "Team name already taken. Please choose another.",
+          formData: req.body,
+          hideNavbar: true,
+        });
+      }
       console.error("❌ MongoDB Save Error:", err);
-      otpStore.delete(teamName); // clean up even if failed
       throw new ExpressError(500, "Database error saving team");
     }
 
-    // 4. Prepare data for Google Sheets
-    const sheetValues = [savedTeamName, creatorEmail];
+    // Prepare data for Google Sheets
+    const sheetValues = [savedTeamName, creatorEmail, creator.phone];
     for (const member of members) {
       sheetValues.push(member.email || "");
-      sheetValues.push(member.phone || "");
     }
 
-    // Fill remaining slots if fewer than 4 members
-    const missing = 4 - members.length;
+    // Fill remaining member email slots (max 3 members)
+    const missing = 3 - members.length;
     for (let i = 0; i < missing; i++) {
       sheetValues.push("");
-      sheetValues.push("");
     }
 
-    // 5. Append data to Google Sheets
     try {
       const client = await auth.getClient();
       await sheets.spreadsheets.values.append({
@@ -271,10 +300,9 @@ app.post(
       console.log("✅ Team appended to Google Sheets");
     } catch (sheetErr) {
       console.error("❌ Google Sheets Error:", sheetErr);
-      // Don't throw to avoid breaking confirmation emails
     }
 
-    // 6. Send confirmation emails to all team members
+    // Send confirmation emails to all team members
     for (const member of members) {
       if (member.email) {
         try {
@@ -290,13 +318,10 @@ app.post(
       }
     }
 
-    // 7. Clean up OTP store and render success
     otpStore.delete(teamName);
-    res.render("listings/teamSuccess", { teamName: savedTeamName });
+    res.render("listings/teamSuccess", { teamName: savedTeamName, hideNavbar: true });
   })
 );
-
-
 
 // -------------------- Error Handling --------------------
 app.all("*", (req, res, next) => {

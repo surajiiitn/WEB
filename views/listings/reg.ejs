@@ -3,27 +3,65 @@
 <section id="team-registration" class="min-h-screen flex items-center justify-center px-4 py-12">
   <div class="w-full max-w-2xl mx-auto">
     <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
-
       <h2 class="text-2xl font-bold mb-6 text-center text-white">Add Team Members</h2>
 
-      <form id="registrationForm" action="/register/team" method="POST" class="space-y-6">
-
+      <form id="registrationForm" action="/register/team" method="POST" class="space-y-6" novalidate>
+        
         <!-- Creator Email -->
         <div class="mb-4">
           <label for="creatorEmail" class="block text-white mb-2">Your Registered Email*</label>
-          <input type="email" id="creatorEmail" name="creatorEmail" placeholder="Your registered Email" required class="form-input" />
+          <input
+            type="email"
+            id="creatorEmail"
+            name="creatorEmail"
+            placeholder="Your registered Email"
+            required
+            class="form-input"
+            autocomplete="email"
+          />
+        </div>
+
+        <!-- Creator Phone -->
+        <div class="mb-4">
+          <label for="creatorPhone" class="block text-white mb-2">Your Phone Number*</label>
+          <input
+            type="tel"
+            id="creatorPhone"
+            name="creatorPhone"
+            placeholder="Phone Number"
+            minlength="10"
+            maxlength="10"
+            pattern="[0-9]{10}"
+            required
+            class="form-input"
+            autocomplete="tel"
+          />
         </div>
 
         <!-- Team Name -->
         <div class="mb-4">
           <label for="teamName" class="block text-white mb-2">Team Name*</label>
-          <input type="text" id="teamName" name="teamName" placeholder="Team Name" required class="form-input" />
+          <input
+            type="text"
+            id="teamName"
+            name="teamName"
+            placeholder="Team Name"
+            required
+            class="form-input"
+          />
         </div>
 
         <!-- Dropdown for number of additional members -->
         <div class="mb-4">
-          <label for="additionalCount" class="block text-white mb-2">How many more members to add? (You are already registered)</label>
-          <select id="additionalCount" required onchange="showTeamForms()" class="form-input">
+          <label for="additionalCount" class="block text-white mb-2">
+            How many more members to add? (You are already registered)
+          </label>
+          <select
+            id="additionalCount"
+            required
+            onchange="showTeamForms()"
+            class="form-input"
+          >
             <option value="">-- Select --</option>
             <option value="1">1 (Total 2 Members)</option>
             <option value="2">2 (Total 3 Members)</option>
@@ -33,21 +71,43 @@
 
         <!-- Team Member Forms -->
         <% for(let i = 1; i <= 3; i++) { %>
-          <div id="memberForm-<%= i %>" class="hidden border border-white/10 p-6 rounded-xl bg-white/10 backdrop-blur-sm space-y-4">
+          <div
+            id="memberForm-<%= i %>"
+            class="hidden border border-white/10 p-6 rounded-xl bg-white/10 backdrop-blur-sm space-y-4"
+          >
             <h3 class="text-lg font-semibold text-white">Member <%= i + 1 %></h3>
 
             <div class="grid grid-cols-2 gap-4">
-              <input type="text" name="members[<%= i - 1 %>][firstName]" placeholder="First Name*" class="form-input" />
-              <input type="text" name="members[<%= i - 1 %>][lastName]" placeholder="Last Name*" class="form-input" />
+              <input
+                type="text"
+                name="members[<%= i - 1 %>][firstName]"
+                placeholder="First Name*"
+                class="form-input"
+                required
+              />
+              <input
+                type="text"
+                name="members[<%= i - 1 %>][lastName]"
+                placeholder="Last Name*"
+                class="form-input"
+                required
+              />
             </div>
 
-            <input type="email" name="members[<%= i - 1 %>][email]" placeholder="Email*" class="form-input" />
-            <input type="tel" name="members[<%= i - 1 %>][phone]" placeholder="Phone Number*" minlength="10" maxlength="10" class="form-input" />
-            <input type="url" name="members[<%= i - 1 %>][linkedin]" placeholder="LinkedIn URL*" class="form-input" />
+            <input
+              type="email"
+              name="members[<%= i - 1 %>][email]"
+              placeholder="Email*"
+              class="form-input"
+              required
+            />
           </div>
         <% } %>
 
-        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 glow-purple-button">
+        <button
+          type="submit"
+          class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 glow-purple-button"
+        >
           Submit Team
         </button>
       </form>
@@ -62,10 +122,10 @@
       const form = document.getElementById(`memberForm-${i}`);
       if (i <= count) {
         form.classList.remove("hidden");
-        form.querySelectorAll("input").forEach(input => input.required = true);
+        form.querySelectorAll("input").forEach((input) => (input.required = true));
       } else {
         form.classList.add("hidden");
-        form.querySelectorAll("input").forEach(input => input.required = false);
+        form.querySelectorAll("input").forEach((input) => (input.required = false));
       }
     }
   }
