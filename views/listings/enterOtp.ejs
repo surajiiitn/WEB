@@ -3,6 +3,10 @@
 <section class="min-h-screen flex flex-col justify-center items-center px-4">
   <h1 class="text-2xl font-bold mb-6 text-center">Enter OTP</h1>
 
+  <p class="mb-2 text-center text-lg">
+    We’ve sent an OTP to <strong><%= email %></strong>
+  </p>
+
   <form method="POST" action="/listings/submit-otp" class="w-full max-w-sm space-y-4">
     <!-- Show email (read-only) -->
     <input
@@ -30,4 +34,3 @@
     </button>
   </form>
 </section>
-
