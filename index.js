@@ -26,7 +26,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
 app.get("/", userController.renderHome);
-
+``
 // User registration with rate limiting
 app.post("/listings", rateLimiter, wrapAsync(userController.sendUserOtp));
 app.post("/listings/submit-otp", rateLimiter, wrapAsync(userController.verifyUserOtp));
