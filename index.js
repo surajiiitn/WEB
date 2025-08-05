@@ -102,46 +102,100 @@ app.post(
     const { email, otp } = req.body;
     const record = otpStore.get(email);
 
-    if (!record || Date.now() > record.expiresAt)
-      throw new ExpressError(400, "OTP expired or invalid.");
-    if (record.otp.toString() !== otp.trim())
-      throw new ExpressError(400, "Incorrect OTP.");
+    if (!record || Date.now() > record.expiresAt) {
+      return res.status(400).render("listings/error", {
+        err: { message: "OTP expired or invalid." },
+        hideNavbar: true,
+      });
+    }
+
+    if (record.otp.toString() !== otp.trim()) {
+      return res.status(400).render("listings/error", {
+        err: { message: "Incorrect OTP." },
+        hideNavbar: true,
+      });
+    }
 
     const data = record.data;
+
+    // Normalize email
+    data.email = data.email.trim().toLowerCase();
+
     const newUser = new User(data);
-    await newUser.save();
 
-    const client = await auth.getClient();
-    await sheets.spreadsheets.values.append({
-      auth: client,
-      spreadsheetId: SPREADSHEET_ID,
-      range: "Sheet1!A1",
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values: [
-          [
-            data.firstName,
-            data.lastName,
-            data.email,
-            data.phone,
-            data.age,
-            data.college,
-            data.linkedin,
-            data.country,
+    try {
+      // Attempt to save the user
+      await newUser.save();
+    } catch (err) {
+      otpStore.delete(email); // Clear OTP even if failed
+
+      // Handle duplicate key error
+      if (err.code === 11000) {
+        console.warn("⚠️ Duplicate registration attempt for:", data.email);
+        return res.render("listings/success", {
+          name: data.firstName,
+          email: data.email,
+          alreadyRegistered: true,
+          hideNavbar: true,
+        });
+      }
+
+      // Unknown DB error
+      console.error("❌ Error saving user:", err);
+      return res.status(500).render("listings/error", {
+        err: { message: "Error saving registration. Please try again." },
+        hideNavbar: true,
+      });
+    }
+
+    // Append to Google Sheet (after save success)
+    try {
+      const client = await auth.getClient();
+      await sheets.spreadsheets.values.append({
+        auth: client,
+        spreadsheetId: SPREADSHEET_ID,
+        range: "Sheet1!A1",
+        valueInputOption: "USER_ENTERED",
+        requestBody: {
+          values: [
+            [
+              data.firstName,
+              data.lastName,
+              data.email,
+              data.phone,
+              data.age,
+              data.college,
+              data.linkedin,
+              data.country,
+            ],
           ],
-        ],
-      },
-    });
+        },
+      });
+    } catch (sheetErr) {
+      console.error("❌ Google Sheets Error:", sheetErr);
+      // You may notify admin or user optionally
+    }
 
-    await transporter.sendMail({
-      from: "elevatexyz@gmail.com",
-      to: data.email,
-      subject: "Registration Successful - Genathon 3.0",
-      html: successEmailHtml(data.firstName),
-    });
+    // Send confirmation email only if user was saved
+    try {
+      await transporter.sendMail({
+        from: "elevatexyz@gmail.com",
+        to: data.email,
+        subject: "Registration Successful - Genathon 3.0",
+        html: successEmailHtml(data.firstName),
+      });
+    } catch (emailErr) {
+      console.error("❌ Failed to send confirmation email:", emailErr);
+      // Optional: Add retry logic or notify admin
+    }
 
-    otpStore.delete(email);
-    res.render("listings/success", { name: data.firstName, email: data.email, hideNavbar: true });
+    otpStore.delete(email); // Remove OTP after successful save and email
+
+    res.render("listings/success", {
+      name: data.firstName,
+      email: data.email,
+      hideNavbar: true,
+    });
   })
 );
 
