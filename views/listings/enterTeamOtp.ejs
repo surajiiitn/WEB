@@ -1,14 +1,15 @@
 <% layout("/layouts/boilerplate") %>
 
-<section class="min-h-screen flex flex-col justify-center items-center px-4 py-12 bg-gray-100">
+<section class="min-h-screen flex flex-col justify-center items-center px-4">
   <h1 class="text-2xl font-bold mb-6 text-center text-purple-700">Verify Team OTP</h1>
 
-  <form method="POST" action="/team/verify-otp" class="w-full max-w-sm space-y-4 bg-white p-8 rounded-xl shadow-lg">
+  <p class="mb-2 text-center text-lg">
+    OTP sent for team: <strong><%= teamName %></strong>
+  </p>
+
+  <form method="POST" action="/team/verify-otp" class="w-full max-w-sm space-y-4">
     <!-- Hidden input for teamName -->
     <input type="hidden" name="teamName" value="<%= teamName %>" />
-
-    <!-- Display team name -->
-    <p class="mb-4 text-center text-gray-700">Enter the OTP sent to your team members for team: <span class="font-semibold"><%= teamName %></span></p>
 
     <!-- OTP input -->
     <input
@@ -19,12 +20,12 @@
       maxlength="6"
       pattern="\d{6}"
       title="Please enter the 6-digit OTP"
-      class="form-input p-3 w-full rounded-md border border-gray-300 focus:ring-purple-500 focus:border-purple-500"
+      class="form-input"
     />
 
     <button
       type="submit"
-      class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-105"
+      class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 glow-purple-button"
     >
       Verify OTP
     </button>
