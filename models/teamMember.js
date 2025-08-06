@@ -35,7 +35,7 @@ const teamSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    unique: true, // enforce unique team names at DB level
+    unique: true,
   },
   members: {
     type: [memberSchema],
@@ -45,7 +45,7 @@ const teamSchema = new mongoose.Schema({
       },
       message: "Team members exceed the limit of 3",
     },
-    default: [], // default empty array if no members added
+    default: [],
   },
 });
 

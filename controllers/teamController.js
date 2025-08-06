@@ -2,7 +2,7 @@ const User = require("../models/userRegisteration");
 const Team = require("../models/teamMember");
 const { teamRegistrationSchema } = require("../schema");
 const { setOtp, getOtp, deleteOtp } = require("../otpStore");
-const transporter = require("../emailTransporter"); // Make sure path is correct
+const transporter = require("../emailTransporter"); 
 const { google } = require("googleapis");
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;
 
@@ -62,10 +62,29 @@ module.exports = {
           errorMessage: "Creator email is not registered.",
           formData: req.body,
           hideNavbar: true,
+
         });
       }
 
       const memberEmails = members.map((m) => m.email);
+
+      // Check if creator or any member already belongs to a team
+      const usersInTeams = await Team.find({
+        $or: [
+          { creatorEmail: { $in: [creatorEmail, ...memberEmails] } },
+          { "members.email": { $in: [creatorEmail, ...memberEmails] } },
+        ],
+      });
+
+      if (usersInTeams.length > 0) {
+        return res.status(400).render("listings/reg", {
+          errorMessage: "One or more users (leader or members) have already joined a team.",
+          formData: req.body,
+          hideNavbar: true,
+          showTeamErrorPopup: true,
+        });
+      }
+
       const existingMembers = await User.find({ email: { $in: memberEmails } });
       if (existingMembers.length !== memberEmails.length) {
         return res.status(400).render("listings/reg", {
@@ -123,6 +142,22 @@ module.exports = {
         });
       }
 
+      // Re-check here to ensure leader or members didn't join another team meanwhile
+      const usersInTeams = await Team.find({
+        $or: [
+          { creatorEmail: { $in: [creatorEmail, ...members.map(m => m.email)] } },
+          { "members.email": { $in: [creatorEmail, ...members.map(m => m.email)] } },
+        ],
+      });
+      if (usersInTeams.length > 0) {
+        await deleteOtp(teamName);
+        return res.status(400).render("listings/reg", {
+          errorMessage: "One or more users (leader or members) have already joined a team.",
+          formData: { creatorEmail, teamName, members },
+          hideNavbar: true,
+        });
+      }
+
       const creator = await User.findOne({ email: creatorEmail });
       if (!creator) {
         await deleteOtp(teamName);
@@ -143,7 +178,7 @@ module.exports = {
         if (err.code === 11000 && err.keyPattern?.teamName) {
           return res.status(400).render("listings/reg", {
             errorMessage: "Team name already taken. Please choose another.",
-            formData: req.body,
+            formData: { creatorEmail, teamName, members },
             hideNavbar: true,
           });
         }
