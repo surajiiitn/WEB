@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Countdown | Genathon 3.0</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Font & Styling -->
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .glow {
+        text-shadow: 0 0 8px #7b61ff;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-tr from-black via-gray-900 to-black text-white min-h-screen flex items-center justify-center">
+
+    <div class="bg-white/5 backdrop-blur-md border border-purple-500/30 shadow-xl rounded-3xl p-8 md:p-12 w-[90%] max-w-xl text-center">
+      <h1 class="text-3xl md:text-4xl font-bold mb-6 glow text-purple-400">
+        Countdown to <span class="text-white">Genathon 3.0</span>
+      </h1>
+      <div id="timer" class="grid grid-cols-4 gap-4 justify-center text-xl md:text-3xl font-semibold">
+        <div class="bg-white/10 rounded-xl p-4 shadow border border-purple-500/20">
+          <div id="days">00</div>
+          <p class="text-xs md:text-sm font-medium mt-1">Days</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 shadow border border-purple-500/20">
+          <div id="hours">00</div>
+          <p class="text-xs md:text-sm font-medium mt-1">Hours</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 shadow border border-purple-500/20">
+          <div id="minutes">00</div>
+          <p class="text-xs md:text-sm font-medium mt-1">Minutes</p>
+        </div>
+        <div class="bg-white/10 rounded-xl p-4 shadow border border-purple-500/20">
+          <div id="seconds">00</div>
+          <p class="text-xs md:text-sm font-medium mt-1">Seconds</p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const targetDate = new Date("2025-09-01T00:00:00").getTime();
+
+      const countdown = setInterval(() => {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          clearInterval(countdown);
+          document.getElementById("timer").innerHTML =
+            "<span class='text-xl glow text-green-400'>Event Started!</span>";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = String(days).padStart(2, "0");
+        document.getElementById("hours").innerText = String(hours).padStart(2, "0");
+        document.getElementById("minutes").innerText = String(minutes).padStart(2, "0");
+        document.getElementById("seconds").innerText = String(seconds).padStart(2, "0");
+      }, 1000);
+    </script>
+  </body>
+</html>
