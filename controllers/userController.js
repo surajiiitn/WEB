@@ -1,7 +1,7 @@
 const User = require("../models/userRegisteration");
 const { userRegistrationSchema } = require("../schema");
 const { otpEmailHtml, successEmailHtml } = require("../emailTemplates");
-const { setOtp, getOtp, deleteOtp } = require("../otpStore");
+const { setOtp, getOtp, deleteOtp } = require("./otpController");
 const transporter = require("../emailTransporter"); // Make sure path is correct
 const { google } = require("googleapis");
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;

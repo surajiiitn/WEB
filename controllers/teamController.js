@@ -1,7 +1,7 @@
 const User = require("../models/userRegisteration");
 const Team = require("../models/teamMember");
 const { teamRegistrationSchema } = require("../schema");
-const { setOtp, getOtp, deleteOtp } = require("../otpStore");
+const { setOtp, getOtp, deleteOtp } = require("./otpController");
 const transporter = require("../emailTransporter"); 
 const { google } = require("googleapis");
 const SPREADSHEET_ID = process.env.SPREADSHEET_ID;

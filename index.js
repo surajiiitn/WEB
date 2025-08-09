@@ -22,6 +22,7 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Add this if expecting JSON requests
 app.use(express.static(path.join(__dirname, "public")));
 
 // Routes
@@ -31,19 +32,24 @@ app.get("/", userController.renderHome);
 app.post("/listings", rateLimiter, wrapAsync(userController.sendUserOtp));
 app.post("/listings/submit-otp", rateLimiter, wrapAsync(userController.verifyUserOtp));
 
-app.get("/alreadyRegistered",(req,res)=>{
-  res.render("listings/reg.ejs",{hideNavbar :true});
-})
+app.get("/alreadyRegistered", (req, res) => {
+  res.render("listings/reg.ejs", {
+    hideNavbar: true,
+    message: "You are already registered.",
+  });
+});
+
 // Team routes with rate limiting
 app.get("/team/register", teamController.renderTeamRegister);
 app.post("/register/team", rateLimiter, wrapAsync(teamController.handleTeamRegistration));
 app.post("/team/verify-otp", rateLimiter, wrapAsync(teamController.verifyTeamOtp));
 
-// Error handling
+// Error handling for unknown routes
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
 });
 
+// Centralized error handler
 app.use((err, req, res, next) => {
   const { statusCode = 500 } = err;
   res.status(statusCode).render("listings/error", { err, hideNavbar: true });

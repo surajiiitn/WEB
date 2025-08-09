@@ -1,15 +1,19 @@
 const mongoose = require("mongoose");
 
+const toUpper = (value) => (typeof value === "string" ? value.toUpperCase() : value);
+
 const memberSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: true,
     trim: true,
+    set: toUpper,
   },
   lastName: {
     type: String,
     required: true,
     trim: true,
+    set: toUpper,
   },
   email: {
     type: String,
@@ -36,6 +40,7 @@ const teamSchema = new mongoose.Schema({
     required: true,
     trim: true,
     unique: true,
+    set: toUpper,
   },
   members: {
     type: [memberSchema],
