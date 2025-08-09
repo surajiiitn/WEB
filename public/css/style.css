@@ -1331,3 +1331,16 @@ button:focus,
 .glow {
     text-shadow: 0 0 8px #7b61ff;
   } 
+
+  html, body {
+  overflow-x: hidden;
+}
+
+
+.hover-text-change::before {
+  content: "Already Registered";
+  display: inline-block;
+}
+.hover-text-change:hover::before {
+  content: "Make Team";
+}

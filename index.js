@@ -31,6 +31,9 @@ app.get("/", userController.renderHome);
 app.post("/listings", rateLimiter, wrapAsync(userController.sendUserOtp));
 app.post("/listings/submit-otp", rateLimiter, wrapAsync(userController.verifyUserOtp));
 
+app.get("/alreadyRegistered",(req,res)=>{
+  res.render("listings/reg.ejs");
+})
 // Team routes with rate limiting
 app.get("/team/register", teamController.renderTeamRegister);
 app.post("/register/team", rateLimiter, wrapAsync(teamController.handleTeamRegistration));
