@@ -1,17 +1,19 @@
 {
-  "engines":{
-    "node":"22.x"
-  },
   "name": "website",
   "version": "1.0.0",
+  "description": "Genathon 3.0 Website",
   "main": "index.js",
+  "type": "commonjs",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "engines": {
+    "node": "22.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
@@ -33,7 +35,6 @@
     "type": "git",
     "url": "git+https://github.com/surajiiitn/WEB.git"
   },
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/surajiiitn/WEB/issues"
   },
