@@ -2,7 +2,7 @@
 
 Welcome to the official repository for **Genathon 3.0**, the flagship hackathon organized by **Club Elevate, IIIT Nagpur**. This repository contains the backend logic and assets powering the immersive experience behind our event website.
 
-> **Status**: 🚧 Under Development – Deployment and UI integration in progress.
+
 
 ---
 
